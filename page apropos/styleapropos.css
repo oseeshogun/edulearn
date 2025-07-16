@@ -1,0 +1,264 @@
+* {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+    section {
+      padding: 60px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s ease-out;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .title {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .title h2 {
+      font-size: 2.5rem;
+      color: #0b74de;
+    }/* Mission */
+.mission {
+  text-align: center;
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Équipe */
+.equipe {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 40px;
+}
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+}
+.card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+.card h4 {
+  margin: 10px 0 5px;
+  color: #0b74de;
+}
+
+/* Chiffres */
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+}
+.stat {
+  text-align: center;
+}
+.stat h3 {
+  font-size: 2rem;
+  color: #0b74de;
+}
+.stat p {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Témoignages */
+.temoins {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+.temoins .temoin {
+  flex: 0 0 300px;
+  scroll-snap-align: start;
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+footer {
+  background: #003366;
+  color: white;
+  text-align: center;
+  padding: 20px 10px;
+}
+footer a {
+  color: white;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .title h2 {
+    font-size: 2rem;
+  }
+}
+
+  
+  .fonctionnalites {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  max-width: 600px;
+  margin: 0 auto 60px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.feature .icon {
+  width: 28px;
+  height: 28px;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .feature {
+    font-size: 1rem;
+  }
+  .feature .icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+  .valeurs {
+  max-width: 700px;
+  margin: 0 auto 60px;
+  padding: 0 20px;
+}
+
+.valeur {
+  margin-bottom: 35px;
+  color: #333;
+}
+
+.valeur strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.valeur p {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+  
+  .histoire {
+  max-width: 800px;
+  margin: 0 auto 60px;
+  padding: 0 20px;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #333;
+  text-align: justify;
+}
+  .public-cible {
+  max-width: 800px;
+  margin: 0 auto 60px;
+  padding: 0 20px;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #333;
+}
+
+.public-cible ul {
+  list-style: none;
+  padding: 0;
+}
+
+.public-cible li {
+  margin-bottom: 15px;
+  position: relative;
+  padding-left: 20px;
+}
+
+.public-cible li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #007BF;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+  .appel-action {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #f9f9f9;
+  color: #333;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.appel-action h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.appel-action p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 12px 25px;
+  font-size: 1rem;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #007BFF;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background-color: #c0c0c0;
+}
