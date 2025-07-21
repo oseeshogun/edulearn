@@ -1,8 +1,8 @@
 <?php
-$host = 'db'; // Nom du service MySQL dans docker-compose.yml
+$host = 'db';
 $dbname = 'edulearn';
-$user = 'eduuser'; // Utilisateur défini dans docker-compose.yml
-$pass = 'edupassword'; // Mot de passe défini dans docker-compose.yml
+$user = 'eduuser';
+$pass = 'edupassword';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);

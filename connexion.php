@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         // Redirection selon le rôle
         if ($user['role'] == 'formateur') {
-            redirect_with_message('formateur/dashboard.php', 'Bienvenue ' . htmlspecialchars($user['nom']) . ' !', 'success');
+            redirect_with_message('dashboard.php', 'Bienvenue ' . htmlspecialchars($user['nom']) . ' !', 'success');
         } else {
             redirect_with_message('index.php', 'Bienvenue ' . htmlspecialchars($user['nom']) . ' !', 'success');
         }

@@ -53,9 +53,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                 // Redirection selon le rôle
                 if ($role == 'formateur') {
-                    redirect_with_message('formateur/dashboard.php', 'Inscription réussie ! Bienvenue ' . htmlspecialchars($nom) . ' !', 'success');
+                    redirect_with_message('dashboard.php', 'Inscription réussie ! Bienvenue ' . htmlspecialchars($nom) . ' !', 'success');
                 } else {
-                    redirect_with_message('index.php', 'Inscription réussie ! Bienvenue ' . htmlspecialchars($nom) . ' !', 'success');
+                    redirect_with_message('cours.php', 'Inscription réussie ! Bienvenue ' . htmlspecialchars($nom) . ' !', 'success');
                 }
             } catch (PDOException $e) {
                 redirect_with_message('index.php', 'Erreur lors de l\'inscription : ' . $e->getMessage(), 'danger');

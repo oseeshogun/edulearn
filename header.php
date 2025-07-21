@@ -21,7 +21,7 @@ $user = $is_logged_in ? $_SESSION['utilisateur'] : null;
     <?php endif; ?>
     
     <?php if ($is_logged_in && $user['role'] == 'formateur'): ?>
-    <a href="formateur/dashboard.php">Tableau de bord</a>
+    <a href="dashboard.php">Tableau de bord</a>
     <?php endif; ?>
     
     <a href="page apropos/apropos.php">À propos</a>

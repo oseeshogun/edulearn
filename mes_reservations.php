@@ -13,20 +13,37 @@ if (!isset($_SESSION['utilisateur'])) {
 }
 
 $utilisateur_id = $_SESSION['utilisateur']['id'];
+$role = $_SESSION['utilisateur']['role'];
 
-// Récupérer les réservations de l'utilisateur avec les détails des cours
-$stmt = $pdo->prepare("
-    SELECT r.id as reservation_id, r.date_reservation, 
-           c.id as cours_id, c.titre, c.description, c.image, c.date_creation,
-           u.nom as formateur_nom
-    FROM reservations r
-    JOIN cours c ON r.cours_id = c.id
-    LEFT JOIN utilisateurs u ON c.formateur_id = u.id
-    WHERE r.utilisateur_id = ?
-    ORDER BY r.date_reservation DESC
-");
-$stmt->execute([$utilisateur_id]);
-$reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if ($role == 'formateur') {
+    $stmt = $pdo->prepare("
+        SELECT r.id as reservation_id, r.date_reservation, 
+               c.id as cours_id, c.titre, c.description, c.image, c.date_creation,
+               u.nom as formateur_nom, ua.nom as utilisateur_nom
+        FROM reservations r
+        JOIN cours c ON r.cours_id = c.id
+        LEFT JOIN utilisateurs u ON c.formateur_id = u.id
+        JOIN utilisateurs ua ON r.utilisateur_id = ua.id
+        WHERE c.formateur_id = ?
+        ORDER BY r.date_reservation DESC
+    ");
+    $stmt->execute([$utilisateur_id]);
+    $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    // Récupérer les réservations de l'utilisateur avec les détails des cours
+    $stmt = $pdo->prepare("
+        SELECT r.id as reservation_id, r.date_reservation, 
+               c.id as cours_id, c.titre, c.description, c.image, c.date_creation,
+               u.nom as formateur_nom
+        FROM reservations r
+        JOIN cours c ON r.cours_id = c.id
+        LEFT JOIN utilisateurs u ON c.formateur_id = u.id
+        WHERE r.utilisateur_id = ?
+        ORDER BY r.date_reservation DESC
+    ");
+    $stmt->execute([$utilisateur_id]);
+    $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <!DOCTYPE html>
@@ -198,7 +215,14 @@ $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?php echo htmlspecialchars($reservation['formateur_nom']); ?>
                                 </div>
                             </div>
-                            
+
+                            <?php if ($role == 'formateur'): ?>
+                                <div class="reservation-user">
+                                    <i class="fas fa-user"></i>
+                                    <?php echo htmlspecialchars($reservation['utilisateur_nom']); ?>
+                                </div>
+                            <?php endif; ?>
+
                             <div class="buttons-container">
                                 <a href="cours_detail.php?id=<?php echo $reservation['cours_id']; ?>" class="btn-secondary">Voir le cours</a>
                                 <a href="annuler_reservation.php?id=<?php echo $reservation['reservation_id']; ?>" class="btn-cancel" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation?');">Annuler</a>

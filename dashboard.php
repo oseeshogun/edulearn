@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once '../config.php';
 
 // Vérifier si l'utilisateur est connecté et est un formateur
 if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur']['role'] !== 'formateur') {
@@ -10,6 +11,55 @@ if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur']['role'] !== 'fo
 
 // Récupérer les informations de l'utilisateur
 $user = $_SESSION['utilisateur'];
+$utilisateur_id = $user['id'];
+
+// Récupérer le nombre de cours actifs
+$stmt = $pdo->prepare("SELECT COUNT(*) as count FROM cours WHERE formateur_id = ?"); 
+$stmt->execute([$utilisateur_id]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if ($row && isset($row['count'])) {
+    $nb_cours = (int)$row['count'];
+} else {
+    $nb_cours = 0;
+}
+
+// Récupérer le nombre d'apprenants qui ont réservé mes cours
+$stmt = $pdo->prepare("SELECT COUNT(DISTINCT utilisateur_id) as count FROM reservations r 
+JOIN cours c ON r.cours_id = c.id 
+WHERE c.formateur_id = ?");
+$stmt->execute([$utilisateur_id]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if ($row && isset($row['count'])) {
+    $nb_apprenants = (int)$row['count'];
+} else {
+    $nb_apprenants = 0;
+}
+
+// Traitement du formulaire de création de cours
+$message = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['creer_cours'])) {
+    $titre = trim($_POST['titre']);
+    $description = trim($_POST['description']);
+    $image = trim($_POST['image']); // URL de l'image
+    $formateur_id = $user['id'];
+    
+    // Validation des champs
+    if (empty($titre) || empty($description) || empty($image)) {
+        $message = '<div class="alert alert-danger">Tous les champs sont obligatoires.</div>';
+    } else {
+        try {
+            // Insertion dans la base de données
+            $stmt = $pdo->prepare('INSERT INTO cours (titre, description, formateur_id, image) VALUES (?, ?, ?, ?)');
+            $stmt->execute([$titre, $description, $formateur_id, $image]);
+            
+            $message = '<div class="alert alert-success">Cours créé avec succès!</div>';
+        } catch (PDOException $e) {
+            $message = '<div class="alert alert-danger">Erreur lors de la création du cours: ' . $e->getMessage() . '</div>';
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -20,6 +70,8 @@ $user = $_SESSION['utilisateur'];
     <title>Tableau de bord Formateur - EduLearn</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Bootstrap CSS pour le modal -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .dashboard-container {
             max-width: 1200px;
@@ -161,43 +213,55 @@ $user = $_SESSION['utilisateur'];
         .logout-btn i {
             margin-right: 5px;
         }
+        
+        /* Styles pour le modal */
+        .modal-backdrop {
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
     </style>
 </head>
 <body>
-    <header class="site-header">
-        <div class="logo">EduLearn</div>
-        <nav class="main-nav">
-            <a href="../index.php">Accueil</a>
-            <a href="#" class="active">Tableau de bord</a>
-            <a href="#">Mes cours</a>
-            <a href="#">Calendrier</a>
-            <a href="#">Messages</a>
-        </nav>
-        <div class="auth-buttons">
-            <a href="../index.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
-        </div>
-    </header>
+    <?php include '../header.php'; ?>
 
     <div class="dashboard-container">
         <div class="dashboard-header">
             <div class="welcome-message">
                 <h1>Bienvenue, <?php echo htmlspecialchars($user['nom']); ?> !</h1>
-                <p>Voici votre tableau de bord formateur</p>
+                <p>Voici un aperçu de votre activité</p>
             </div>
         </div>
-
+        
         <div class="dashboard-stats">
             <div class="stat-card">
                 <i class="fas fa-book"></i>
-                <h3>5</h3>
+                <h3><?php echo $nb_cours; ?></h3>
                 <p>Cours actifs</p>
             </div>
             <div class="stat-card">
                 <i class="fas fa-users"></i>
-                <h3>42</h3>
+                <h3><?php echo $nb_apprenants; ?></h3>
                 <p>Apprenants</p>
             </div>
-            <div class="stat-card">
+            <!-- <div class="stat-card">
                 <i class="fas fa-tasks"></i>
                 <h3>12</h3>
                 <p>Devoirs à corriger</p>
@@ -206,16 +270,16 @@ $user = $_SESSION['utilisateur'];
                 <i class="fas fa-comments"></i>
                 <h3>8</h3>
                 <p>Messages non lus</p>
-            </div>
+            </div> -->
         </div>
 
         <div class="dashboard-actions">
             <div class="action-card">
                 <h3><i class="fas fa-plus-circle"></i> Créer un nouveau cours</h3>
                 <p>Créez et publiez un nouveau cours pour vos apprenants.</p>
-                <button class="btn-primary">Créer un cours</button>
+                <button class="btn-primary" data-bs-toggle="modal" data-bs-target="#creerCoursModal">Créer un cours</button>
             </div>
-            <div class="action-card">
+            <!-- <div class="action-card">
                 <h3><i class="fas fa-clipboard-check"></i> Évaluer les devoirs</h3>
                 <p>Consultez et notez les devoirs soumis par vos apprenants.</p>
                 <button class="btn-primary">Voir les devoirs</button>
@@ -224,39 +288,10 @@ $user = $_SESSION['utilisateur'];
                 <h3><i class="fas fa-chart-line"></i> Analyser les performances</h3>
                 <p>Consultez les statistiques détaillées de vos cours et apprenants.</p>
                 <button class="btn-primary">Voir les statistiques</button>
-            </div>
+            </div> -->
         </div>
 
-        <div class="recent-activity">
-            <h2>Activité récente</h2>
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <i class="fas fa-user-plus"></i>
-                </div>
-                <div class="activity-details">
-                    <h4>Nouvel apprenant inscrit</h4>
-                    <p>Sophie Martin s'est inscrite à votre cours "Introduction au développement web"</p>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <i class="fas fa-file-alt"></i>
-                </div>
-                <div class="activity-details">
-                    <h4>Devoir soumis</h4>
-                    <p>Thomas Dubois a soumis le devoir "Création d'une page web responsive"</p>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <i class="fas fa-comment"></i>
-                </div>
-                <div class="activity-details">
-                    <h4>Nouveau commentaire</h4>
-                    <p>Julie Lefèvre a posé une question dans le forum du cours "Bases de données SQL"</p>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     <footer class="footer">
@@ -269,5 +304,52 @@ $user = $_SESSION['utilisateur'];
             <p>&copy; 2025 EduLearn - Tous droits réservés</p>
         </div>
     </footer>
+    
+    <!-- Modal pour créer un cours -->
+    <div class="modal fade" id="creerCoursModal" tabindex="-1" aria-labelledby="creerCoursModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="creerCoursModalLabel">Créer un nouveau cours</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <?php if (!empty($message)) echo $message; ?>
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="titre" class="form-label">Titre du cours</label>
+                            <input type="text" class="form-control" id="titre" name="titre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">URL de l'image du cours</label>
+                            <input type="url" class="form-control" id="image" name="image" placeholder="https://exemple.com/image.jpg" required>
+                            <small class="text-muted">Entrez l'URL complète d'une image (https://...)</small>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" name="creer_cours" class="btn btn-primary">Créer le cours</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Afficher le modal si le formulaire a été soumis avec des erreurs
+        <?php if (!empty($message) && strpos($message, 'alert-danger') !== false): ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            var myModal = new bootstrap.Modal(document.getElementById('creerCoursModal'));
+            myModal.show();
+        });
+        <?php endif; ?>
+    </script>
 </body>
 </html>
