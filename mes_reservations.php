@@ -242,7 +242,7 @@ if ($role == 'formateur') {
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-links">
-                <a href="page apropos/apropos.php">À propos</a>
+                <a href="apropos.php">À propos</a>
                 <a href="#" id="opencontactModal">Contact</a>
                 <a href="#">Mentions légales</a>
                 <a href="#">FAQ</a>

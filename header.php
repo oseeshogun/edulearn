@@ -24,7 +24,7 @@ $user = $is_logged_in ? $_SESSION['utilisateur'] : null;
     <a href="dashboard.php">Tableau de bord</a>
     <?php endif; ?>
     
-    <a href="page apropos/apropos.php">À propos</a>
+    <a href="apropos.php">À propos</a>
     <a id="openModalBtn" onclick="openModal()">Contact</a>
   </nav>
   

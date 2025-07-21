@@ -1,11 +1,11 @@
 <?php
 session_start();
-require_once '../config.php';
+require_once 'config.php';
 
 // Vérifier si l'utilisateur est connecté et est un formateur
 if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur']['role'] !== 'formateur') {
     // Rediriger vers la page d'accueil si ce n'est pas un formateur
-    header('Location: ../index.php');
+    header('Location: index.php');
     exit();
 }
 
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['creer_cours'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de bord Formateur - EduLearn</title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <!-- Bootstrap CSS pour le modal -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -240,7 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['creer_cours'])) {
     </style>
 </head>
 <body>
-    <?php include '../header.php'; ?>
+    <?php include 'header.php'; ?>
 
     <div class="dashboard-container">
         <div class="dashboard-header">
@@ -327,7 +327,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['creer_cours'])) {
                         <div class="mb-3">
                             <label for="image" class="form-label">URL de l'image du cours</label>
                             <input type="url" class="form-control" id="image" name="image" placeholder="https://exemple.com/image.jpg" required>
-                            <small class="text-muted">Entrez l'URL complète d'une image (https://...)</small>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>

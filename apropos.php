@@ -72,7 +72,7 @@
   <section class="equipe fade-in">
     
     <div class="card">
-      <img src="../images/esther.jpg" alt="esther" id="image center" >
+      <img src="images/esther.jpg" alt="esther" id="image center" >
       <h4>Esther Kapinga</h4>
       <p>Chef de groupe</p>
     </div>
