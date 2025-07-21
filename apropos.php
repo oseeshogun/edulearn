@@ -1,4 +1,37 @@
+<?php
+session_start();
+require_once 'config.php';
 
+$message_status = '';
+
+// Traitement du formulaire de contact
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_form'])) {
+    $nom = isset($_POST['nom']) ? trim($_POST['nom']) : '';
+    $email = isset($_POST['email']) ? trim($_POST['email']) : null;
+    $objet = isset($_POST['objet']) ? trim($_POST['objet']) : null;
+    $message = isset($_POST['message']) ? trim($_POST['message']) : '';
+    
+    // Validation
+    if (empty($nom)) {
+        $message_status = '<div class="alert alert-danger">Le nom est obligatoire.</div>';
+    } elseif (empty($message)) {
+        $message_status = '<div class="alert alert-danger">Le message est obligatoire.</div>';
+    } else {
+        try {
+            // Préparation de la requête
+            $stmt = $pdo->prepare("INSERT INTO contacts (nom, email, objet, message) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$nom, $email, $objet, $message]);
+            
+            $message_status = '<div class="alert alert-success">Votre message a été envoyé avec succès!</div>';
+            
+            // Réinitialiser les variables
+            $nom = $email = $objet = $message = '';
+        } catch (PDOException $e) {
+            $message_status = '<div class="alert alert-danger">Une erreur est survenue: ' . $e->getMessage() . '</div>';
+        }
+    }
+}
+?>
 <!DOCTYPE html><html lang="fr">
 <head>
   <meta charset="UTF-8" />
@@ -8,11 +41,28 @@
   <title>À propos - EduLearn</title>
   
   <style>
-    
+    .alert {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+    }
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .alert-danger {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
   </style>
 </head>
 <body>
   <?php include 'header.php';?>
+
+  <?php echo $message_status; ?>
+  
   <section class="title fade-in">
     <h2>À propos de EduLearn</h2>
   </section>  <section class="mission fade-in">
@@ -218,13 +268,15 @@
 <!-- Modale -->
 <div id="contactModal" class="modal">
   <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
+    <span class="close">&times;</span>
     <h2>Contactez-nous</h2>
-    <form>
-      <input type="text" placeholder="Votre nom" required>
-      <input type="email" placeholder="Votre email" required>
-      <input type="text" name="sujet" placeholder="Objet du message">
-      <textarea placeholder="Votre message..." rows="5" required></textarea>
+
+    <form method="POST" action="">
+      <input type="text" name="nom" placeholder="Votre nom" required value="<?php echo isset($nom) ? htmlspecialchars($nom) : ''; ?>">
+      <input type="email" name="email" placeholder="Votre email" value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>">
+      <input type="text" name="objet" placeholder="Objet du message" value="<?php echo isset($objet) ? htmlspecialchars($objet) : ''; ?>">
+      <textarea name="message" placeholder="Votre message..." rows="5" required><?php echo isset($message) ? htmlspecialchars($message) : ''; ?></textarea>
+      <input type="hidden" name="contact_form" value="1">
       <button type="submit">Envoyer</button>
       
       <!-- Ligne de séparation -->
