@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styleapropos.css">
   <title>À propos - EduLearn</title>
   
@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <?php include '../header.php';?>
+  <?php include 'header.php';?>
   <section class="title fade-in">
     <h2>À propos de EduLearn</h2>
   </section>  <section class="mission fade-in">
@@ -78,43 +78,43 @@
     </div>
     
     <div class="card">
-      <img src=" ../images/josue.jpg " alt="">
+      <img src="images/josue.jpg " alt="">
       <h4> Josué Mombo</h4>
       <p>Membre du projet EduLearn</p>
     </div>
     <div class="card">
-      <img src="../images/osee.jpg" alt="">
+      <img src="images/osee.jpg" alt="">
       <h4>Osée Masuaku </h4>
       <p>Membre du projet EduLearn</p>
     </div>
     <div class="card">
-      <img src="../images/Daniel.jpg" alt="daniel">
+      <img src="images/Daniel.jpg" alt="daniel">
       <h4>Daniel Kalambayi</h4>
       <p>Membre du projet EduLearn</p>
     </div>
     <div class="card">
-      <img src="../images/joel.jpg" alt="">
+      <img src="images/joel.jpg" alt="">
       <h4>Joel Matundu</h4>
       <p>Membre du projet EduLearn</p>
     </div>
     <div class="card">
-      <img src="../images/sephorah.jpg" alt="">
+      <img src="images/sephorah.jpg" alt="">
       <h4>Séphorah Mandambo</h4>
       <p>Membre du projet EduLearn</p>
     </div>
     <div class="card">
-      <img src="../images/kevin.jpg" alt="kevin">
+      <img src="images/kevin.jpg" alt="kevin">
       <h4>Kevin Mabeka</h4>
       <p>Membre du projet EduLearn</p>
     </div>
     
     <div class="card">
-      <img src="../images/lemuel.jpg" alt="lemuel">
+      <img src="images/lemuel.jpg" alt="lemuel">
       <h4>Lemuel Kawaya</h4>
       <p>Membre du projet EduLearn</p>
     </div>
     <div class="card">
-      <img src="../images/rachel.jpg" alt="">
+      <img src="images/rachel.jpg" alt="">
       <h4>Rachel Nsela</h4>
       <p>Membre du projet EduLearn</p>
     </div>
@@ -124,7 +124,7 @@
       <p>Membre du projet EduLearn</p>
     </div>
     <div class="card">
-      <img src="../images/maria.jpg" alt="maria">
+      <img src="images/maria.jpg" alt="maria">
       <h4>Maria Mayidi </h4>
       <p>Membre du projet EduLearn</p>
     </div>
@@ -386,7 +386,7 @@ function closeModal() {
 </script>
 </script>
   <footer>
-    <p>&copy; 2025 EduLearn - <a href="../index.php">Acceuil</a> | <a href="#">Mentions légales</a> | <a href="#">CGU</a></p>
+    <p>&copy; 2025 EduLearn - <a href="index.php">Acceuil</a> | <a href="#">Mentions légales</a> | <a href="#">CGU</a></p>
   </footer>  <script>
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
